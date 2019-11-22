@@ -34,16 +34,12 @@ const globalReducer = (state: IGlobalState, action: GlobalAction): IGlobalState 
   }
 }
 
-const PreventRerender = React.memo(({ children }) => (<>{children}</>), () => true)
-
 export const Provider: React.FC = ({ children }) => {
   const state = React.useReducer(globalReducer, initialState);
 
   return (
     <GlobalContext.Provider value={state}>
-      <PreventRerender>
-        {children}
-      </PreventRerender>
+      {children}
     </GlobalContext.Provider>
   )
 }

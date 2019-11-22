@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { useGlobalState, actions } from '../state';
 import { Question as TQuestion } from '../state/questions';
-import { Question } from '../components/Question';
+import { Question } from '../ui/Question';
+import { Error } from '../ui/Error';
+import { LoadingIndicator } from '../ui/Loading';
 
 const hardCodedQuestions: TQuestion[] = [{
   id: '123EASY',
@@ -18,8 +20,6 @@ const hardCodedQuestions: TQuestion[] = [{
 }];
 
 export const Quiz = () => {
-  console.log('hi');
-
   const [{ questions }, dispatch] = useGlobalState();
 
   React.useEffect(() => {
@@ -31,8 +31,14 @@ export const Quiz = () => {
       } else {
         dispatch(actions.requestQuestions.failure())
       }
-    }, 300)
-  }, [!!dispatch])
+    }, (Math.random() * 250) + 50)
+  }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
+
+  if (questions.error) {
+    return <Error text={questions.error} />
+  } else if (questions.loading) {
+    return <LoadingIndicator />
+  }
 
   return (questions.current) ? (
     <div>
