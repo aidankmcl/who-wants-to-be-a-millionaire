@@ -3,7 +3,7 @@ import { createAction, createAsyncAction, createReducer, ActionType } from 'type
 
 import { shuffle } from '../utils/array';
 
-type Question = {
+export type Question = {
   id: string;
   text: string; // To have a question with no text, must use empty string
   image?: string; // Link to image
@@ -12,13 +12,13 @@ type Question = {
 }
 
 export interface IQuestionsState {
-  questions: Question[];
+  list: Question[];
   current: Question | null;
   loading: boolean;
 }
 
 export const initialQuestionsState = {
-  questions: [],
+  list: [],
   current: null,
   loading: false,
 }
@@ -51,7 +51,7 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
     const current = questions.shift() || null;
     return {
       current,
-      questions,
+      list: questions,
       loading: false,
     }
   })
@@ -60,11 +60,11 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
     // Shouldn't be able to skip if still loading
     if (state.loading) return state;
 
-    const remainingQuestions = state.questions;
+    const remainingQuestions = state.list;
     const nextQuestion = remainingQuestions.shift() || null;
     return {
       ...state,
       current: nextQuestion,
-      questions: remainingQuestions,
+      list: remainingQuestions,
     }
   });

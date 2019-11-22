@@ -1,3 +1,3 @@
 import React from 'react';
 
-export const Results = () => null
+export const Results = () => (<div>results page!</div>)

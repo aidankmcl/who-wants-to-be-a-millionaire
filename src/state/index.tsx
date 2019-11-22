@@ -4,7 +4,7 @@ import {
   QuestionsAction,
   initialQuestionsState,
   questionsReducer,
-  questionsActions
+  questionsActions,
 } from './questions';
 
 interface IGlobalState {
@@ -16,6 +16,9 @@ const initialState: IGlobalState = {
 }
 
 type GlobalAction = QuestionsAction;
+export const actions = {
+  ...questionsActions
+};
 
 const GlobalContext = React.createContext<[IGlobalState, React.Dispatch<GlobalAction>]>([
   initialState,
@@ -44,3 +47,5 @@ export const Provider: React.FC = ({ children }) => {
     </GlobalContext.Provider>
   )
 }
+
+export const useGlobalState = () => React.useContext(GlobalContext);
