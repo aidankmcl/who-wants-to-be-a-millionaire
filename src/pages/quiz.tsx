@@ -6,6 +6,7 @@ import { Question as TQuestion } from '../state/questions';
 import { Question } from '../ui/Question';
 import { Error } from '../ui/Error';
 import { LoadingIndicator } from '../ui/Loading';
+import { Countdown } from '../ui/Countdown';
 
 const hardCodedQuestions: TQuestion[] = [{
   id: '123EASY',
@@ -21,6 +22,7 @@ const hardCodedQuestions: TQuestion[] = [{
 
 export const Quiz = () => {
   const [{ questions }, dispatch] = useGlobalState();
+  const [startTime, setStartTime] = React.useState();
 
   React.useEffect(() => {
     dispatch(actions.requestQuestions.request())
@@ -34,6 +36,10 @@ export const Quiz = () => {
     }, (Math.random() * 250) + 50)
   }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
 
+  React.useEffect(() => {
+    setStartTime(new Date().getTime())
+  }, [JSON.stringify(questions.current)])
+
   if (questions.error) {
     return <Error text={questions.error} />
   } else if (questions.loading) {
@@ -42,6 +48,7 @@ export const Quiz = () => {
 
   return (questions.current) ? (
     <div>
+      <Countdown start={startTime} limit={3} />
       <Question key={questions.current.id} info={questions.current} />
       <button onClick={() => dispatch(actions.nextQuestion())}>Skip!</button>
     </div>
