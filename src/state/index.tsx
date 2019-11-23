@@ -5,19 +5,35 @@ import {
   initialQuestionsState,
   questionsReducer,
   questionsActions,
+  questionGuard,
 } from './questions';
+
+import {
+  IResultsState,
+  ResultsAction,
+  initialResultsState,
+  resultsReducer,
+  resultsActions,
+  resultsGuard,
+} from './results';
 
 interface IGlobalState {
   questions: IQuestionsState;
+  results: IResultsState;
 }
 
 const initialState: IGlobalState = {
   questions: initialQuestionsState,
+  results: initialResultsState,
 }
 
-type GlobalAction = QuestionsAction;
+type GlobalAction =
+  QuestionsAction
+  | ResultsAction;
+
 export const actions = {
-  ...questionsActions
+  ...questionsActions,
+  ...resultsActions,
 };
 
 const GlobalContext = React.createContext<[IGlobalState, React.Dispatch<GlobalAction>]>([
@@ -25,12 +41,12 @@ const GlobalContext = React.createContext<[IGlobalState, React.Dispatch<GlobalAc
   () => null
 ]);
 
-
 const globalReducer = (state: IGlobalState, action: GlobalAction): IGlobalState => {
-  const { questions } = state;
+  const { questions, results } = state;
 
   return {
-    questions: questionsReducer(questions, action)
+    questions: questionGuard(action) ? questionsReducer(questions, action) : questions,
+    results: resultsGuard(action) ? resultsReducer(results, action) : results,
   }
 }
 

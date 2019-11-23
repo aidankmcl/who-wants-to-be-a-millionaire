@@ -1,5 +1,5 @@
 
-import { createAction, createAsyncAction, createReducer, ActionType } from 'typesafe-actions';
+import { createAction, createAsyncAction, createReducer, ActionType, PayloadAction, getType, Action } from 'typesafe-actions';
 
 import { shuffle } from '../utils/array';
 
@@ -18,12 +18,14 @@ export interface IQuestionsState {
   error: string | null;
 }
 
-export const initialQuestionsState = {
+export const initialQuestionsState: IQuestionsState = {
   list: [],
   current: null,
   loading: false,
   error: null,
 }
+
+const TYPE_PREFIX = 'questions/';
 
 /*
  * I'll pretend that I'm requesting from a service and use
@@ -31,12 +33,12 @@ export const initialQuestionsState = {
  * if I were.
  */
 const requestQuestions = createAsyncAction(
-  'questions/RETRIEVE_REQUEST',
-  'questions/RETRIEVE_SUCCESS',
-  'questions/RETRIEVE_FAILURE',
+  TYPE_PREFIX + 'RETRIEVE_REQUEST',
+  TYPE_PREFIX + 'RETRIEVE_SUCCESS',
+  TYPE_PREFIX + 'RETRIEVE_FAILURE',
 )<void, Question[], void>();
 
-const nextQuestion = createAction('questions/NEXT')();
+const nextQuestion = createAction(TYPE_PREFIX + 'NEXT')();
 
 export const questionsActions = {
   requestQuestions,
@@ -44,6 +46,10 @@ export const questionsActions = {
 }
 
 export type QuestionsAction = ActionType<typeof questionsActions>;
+
+export const questionGuard = (action: Action): action is QuestionsAction => {
+  return action.type.includes(TYPE_PREFIX)
+}
 
 export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(initialQuestionsState)
   .handleAction(requestQuestions.request, (state) => ({ ...state, loading: true, error: null }))
