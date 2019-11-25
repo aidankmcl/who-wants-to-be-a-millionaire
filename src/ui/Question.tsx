@@ -3,17 +3,22 @@ import React from 'react';
 import { Question as TQuestion } from '../state/questions';
 
 type Props = {
-  info: TQuestion
+  info: TQuestion;
+  answerQuestion: (choice: number) => void;
 }
 
-export const Question: React.FC<Props>  = ({ info }) => {
+export const Question: React.FC<Props>  = ({ info, answerQuestion }) => {
   const { text, image, answers, correct } = info;
+
   return (
     <div>
       <p>{text}</p>
       <span>{image}</span>
-      <span>{answers}</span>
-      <span>{correct}</span>
+      {answers.map((choice, i) => (
+        <div onClick={() => answerQuestion(i)}>
+          <p>{choice}</p>
+        </div>
+      ))}
     </div>
   )
 }

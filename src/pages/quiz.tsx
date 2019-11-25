@@ -20,24 +20,28 @@ const hardCodedQuestions: TQuestion[] = [{
   correct: 2
 }];
 
+const allowedTime = 15;
+
 export const Quiz = () => {
   const [{ questions }, dispatch] = useGlobalState();
-  const [startTime, setStartTime] = React.useState();
+  const [remainingTime, setRemainingTime] = React.useState(allowedTime);
 
   React.useEffect(() => {
+    // Mimic request to backend service
     dispatch(actions.requestQuestions.request())
-    // Mimic request
+    // Use setTimeout to reflect delay in response.
     setTimeout(() => {
       if (Math.random() > 0.05) {
         dispatch(actions.requestQuestions.success(hardCodedQuestions))
       } else {
+        // Randomly fail the request
         dispatch(actions.requestQuestions.failure())
       }
     }, (Math.random() * 250) + 50)
   }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
 
   React.useEffect(() => {
-    setStartTime(new Date().getTime())
+    setRemainingTime(allowedTime)
   }, [JSON.stringify(questions.current)])
 
   if (questions.error) {
@@ -46,10 +50,27 @@ export const Quiz = () => {
     return <LoadingIndicator />
   }
 
+  const answerQuestion = (choice: number) => {
+    if (questions.current) {
+      // Manage interaction with global state
+      dispatch(actions.answerQuestion({
+        questionId: questions.current.id,
+        duration: allowedTime - remainingTime,
+        answer: choice
+      }));
+
+      dispatch(actions.nextQuestion());
+    }
+  };
+
   return (questions.current) ? (
     <div>
-      <Countdown start={startTime} limit={3} />
-      <Question key={questions.current.id} info={questions.current} />
+      <Countdown remainingTime={remainingTime} setRemaining={setRemainingTime} />
+      <Question
+        key={questions.current.id}
+        info={questions.current}
+        answerQuestion={answerQuestion}
+      />
       <button onClick={() => dispatch(actions.nextQuestion())}>Skip!</button>
     </div>
   ) : (
