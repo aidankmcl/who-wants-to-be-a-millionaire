@@ -44,17 +44,6 @@ export const Quiz = () => {
     }, (Math.random() * 250) + 50)
   }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
 
-  React.useEffect(() => {
-    setStartTime(new Date().getTime());
-    setEndTime(getNewEndTime());
-  }, [JSON.stringify(questions.current)])
-
-  if (questions.error) {
-    return <Error text={questions.error} />
-  } else if (questions.loading) {
-    return <LoadingIndicator />
-  }
-
   const answerQuestion = (choice: number, duration?: number) => {
     if (questions.current) {
       duration = duration || new Date().getTime() - startTime;
@@ -73,6 +62,27 @@ export const Quiz = () => {
   // to prescribe behavior of a skip
   const skipQuestion = () => {
     answerQuestion(-1, allowedTime);
+  }
+
+  React.useEffect(() => {
+    if (questions.current) {
+      const newEndTime = getNewEndTime()
+      const remainingTime = newEndTime - new Date().getTime();
+      setStartTime(new Date().getTime());
+      setEndTime(newEndTime);
+
+      const countdownTimer = setTimeout(() => {
+        skipQuestion();
+      }, remainingTime);
+
+      return () => clearTimeout(countdownTimer)
+    }
+  }, [JSON.stringify(questions.current)])
+
+  if (questions.error) {
+    return <Error text={questions.error} />
+  } else if (questions.loading) {
+    return <LoadingIndicator />
   }
 
   return (questions.current) ? (

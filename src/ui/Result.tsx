@@ -13,7 +13,7 @@ const getVerdict = (answer: number, correct: number) => {
     case correct:
       return 'Correct!';
     case -1:
-      return 'Skipped...';
+      return 'Didn\'t answer...';
     default:
       return 'Incorrect :(';
   }
