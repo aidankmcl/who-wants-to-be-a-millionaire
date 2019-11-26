@@ -57,7 +57,7 @@ export const Quiz = () => {
 
   const answerQuestion = (choice: number, duration?: number) => {
     if (questions.current) {
-      duration = duration || endTime - new Date().getTime();
+      duration = duration || new Date().getTime() - startTime;
       // Manage interaction with global state
       dispatch(actions.answerQuestion({
         questionId: questions.current.id,
