@@ -27,13 +27,13 @@ export const Result: React.FC<Props>  = ({ question, result }) => {
       <p>{text}</p>
       <span>{image}</span>
       {answers.map((choice, i) => (
-        <div>
+        <div key={i}>
           <p>{choice}</p>
         </div>
       ))}
       <p>Your Answer: {answers[result.answer]}</p>
       <span>{getVerdict(result.answer, correct)}</span><br/>
-      <span>{result.duration.toFixed(2)}</span>
+      <span>{(result.duration / 1000).toFixed(2)}</span>
     </div>
   );
 }

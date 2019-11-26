@@ -15,7 +15,7 @@ export const Question: React.FC<Props>  = ({ info, answerQuestion }) => {
       <p>{text}</p>
       <span>{image}</span>
       {answers.map((choice, i) => (
-        <div onClick={() => answerQuestion(i)}>
+        <div key={i} onClick={() => answerQuestion(i)}>
           <p>{choice}</p>
         </div>
       ))}

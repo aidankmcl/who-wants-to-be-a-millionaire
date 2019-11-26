@@ -20,11 +20,15 @@ const hardCodedQuestions: TQuestion[] = [{
   correct: 2
 }];
 
-const allowedTime = 15;
+// In milliseconds
+const allowedTime = 15 * 1000;
+const getNewEndTime = () => new Date().getTime() + allowedTime
 
 export const Quiz = () => {
   const [{ questions }, dispatch] = useGlobalState();
-  const [remainingTime, setRemainingTime] = React.useState(allowedTime);
+
+  const [startTime, setStartTime] = React.useState(new Date().getTime());
+  const [endTime, setEndTime] = React.useState(getNewEndTime());
 
   React.useEffect(() => {
     // Mimic request to backend service
@@ -41,7 +45,8 @@ export const Quiz = () => {
   }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
 
   React.useEffect(() => {
-    setRemainingTime(allowedTime)
+    setStartTime(new Date().getTime());
+    setEndTime(getNewEndTime());
   }, [JSON.stringify(questions.current)])
 
   if (questions.error) {
@@ -52,7 +57,7 @@ export const Quiz = () => {
 
   const answerQuestion = (choice: number, duration?: number) => {
     if (questions.current) {
-      duration = duration || allowedTime - remainingTime;
+      duration = duration || endTime - new Date().getTime();
       // Manage interaction with global state
       dispatch(actions.answerQuestion({
         questionId: questions.current.id,
@@ -70,10 +75,9 @@ export const Quiz = () => {
     answerQuestion(-1, allowedTime);
   }
 
-
   return (questions.current) ? (
     <div>
-      <Countdown remainingTime={remainingTime} setRemaining={setRemainingTime} />
+      <Countdown startTime={startTime} endTime={endTime} />
       <Question
         key={questions.current.id}
         info={questions.current}
