@@ -9,7 +9,7 @@ export const Results: React.FC = () => {
   const history = useHistory();
 
   if (Object.keys(questions.data).length === 0 || results.answers.length === 0) {
-    history.push("/quiz");
+    history.push('/quiz');
   }
 
   return (

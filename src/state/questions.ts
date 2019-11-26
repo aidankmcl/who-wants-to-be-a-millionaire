@@ -85,7 +85,7 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
   .handleAction(requestQuestions.failure, (state) => ({
     ...state,
     loading: false,
-    error: "Failed to retrieve questions, please refresh the page."
+    error: 'Failed to retrieve questions, please refresh the page.'
   }))
   .handleAction(nextQuestion, (state, action) => {
     // Shouldn't be able to skip if still loading

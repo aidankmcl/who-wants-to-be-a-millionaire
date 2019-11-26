@@ -17,17 +17,17 @@ import {
   resultsGuard,
 } from './results';
 
-interface IGlobalState {
+export interface IGlobalState {
   questions: IQuestionsState;
   results: IResultsState;
 }
 
-const initialState: IGlobalState = {
+export const initialState: IGlobalState = {
   questions: initialQuestionsState,
   results: initialResultsState,
 }
 
-type GlobalAction =
+export type GlobalAction =
   QuestionsAction
   | ResultsAction;
 
@@ -41,7 +41,7 @@ const GlobalContext = React.createContext<[IGlobalState, React.Dispatch<GlobalAc
   () => null
 ]);
 
-const globalReducer = (state: IGlobalState, action: GlobalAction): IGlobalState => {
+export const globalReducer = (state: IGlobalState, action: GlobalAction): IGlobalState => {
   const { questions, results } = state;
 
   return {
