@@ -50,18 +50,26 @@ export const Quiz = () => {
     return <LoadingIndicator />
   }
 
-  const answerQuestion = (choice: number) => {
+  const answerQuestion = (choice: number, duration?: number) => {
     if (questions.current) {
+      duration = duration || allowedTime - remainingTime;
       // Manage interaction with global state
       dispatch(actions.answerQuestion({
         questionId: questions.current.id,
-        duration: allowedTime - remainingTime,
+        duration,
         answer: choice
       }));
 
       dispatch(actions.nextQuestion());
     }
   };
+
+  // Create new function rather than using answerQuestion directly
+  // to prescribe behavior of a skip
+  const skipQuestion = () => {
+    answerQuestion(-1, allowedTime);
+  }
+
 
   return (questions.current) ? (
     <div>
@@ -71,7 +79,7 @@ export const Quiz = () => {
         info={questions.current}
         answerQuestion={answerQuestion}
       />
-      <button onClick={() => dispatch(actions.nextQuestion())}>Skip!</button>
+      <button onClick={() => skipQuestion()}>Skip!</button>
     </div>
   ) : (
     <div>
