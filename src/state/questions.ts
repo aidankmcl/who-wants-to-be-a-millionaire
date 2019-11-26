@@ -11,16 +11,22 @@ export type Question = {
   correct: number;
 }
 
+type QuestionMap = {
+  [questionId: string]: Question
+}
+
 export interface IQuestionsState {
-  list: Question[];
+  data: QuestionMap;
   current: Question | null;
+  queue: string[];
   loading: boolean;
   error: string | null;
 }
 
 export const initialQuestionsState: IQuestionsState = {
-  list: [],
+  data: {},
   current: null,
+  queue: [],
   loading: false,
   error: null,
 }
@@ -55,11 +61,23 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
   .handleAction(requestQuestions.request, (state) => ({ ...state, loading: true, error: null }))
   .handleAction(requestQuestions.success, (state, action) => {
     // Shuffle the questions as per spec
-    const questions = shuffle(action.payload);
-    const current = questions.shift() || null;
+    const questions = action.payload;
+
+    const data: QuestionMap = {};
+    const queue = shuffle(questions.map((question) => {
+      data[question.id] = question;
+      return question.id;
+    }));
+
+    const currentId = queue.shift();
+    const current = (currentId && data[currentId])
+      ? data[currentId]
+      : null;
+
     return {
       current,
-      list: questions,
+      data,
+      queue,
       loading: false,
       error: null,
     }
@@ -73,11 +91,16 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
     // Shouldn't be able to skip if still loading
     if (state.loading) return state;
 
-    const remainingQuestions = state.list;
-    const nextQuestion = remainingQuestions.shift() || null;
+    const remainingQuestions = state.queue;
+
+    const nextId = remainingQuestions.shift();
+    const nextQuestion = (nextId && state.data[nextId])
+      ? state.data[nextId]
+      : null;
+
     return {
       ...state,
       current: nextQuestion,
-      list: remainingQuestions,
+      queue: remainingQuestions,
     }
   });
