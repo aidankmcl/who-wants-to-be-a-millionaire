@@ -21,7 +21,17 @@ export interface IQuestionsState {
   queue: string[];
   loading: boolean;
   error: string | null;
+  powerups: {
+    [K in PowerupName]: PowerupInfo;
+  }
 }
+
+export type PowerupName = 'removeTwo' | 'addTime';
+
+type PowerupInfo = {
+  active: boolean;
+  used: boolean;
+};
 
 export const initialQuestionsState: IQuestionsState = {
   data: {},
@@ -29,6 +39,16 @@ export const initialQuestionsState: IQuestionsState = {
   queue: [],
   loading: false,
   error: null,
+  powerups: {
+    removeTwo: {
+      active: false,
+      used: false,
+    },
+    addTime: {
+      active: false,
+      used: false,
+    },
+  }
 }
 
 const TYPE_PREFIX = 'questions/';
@@ -46,9 +66,12 @@ const requestQuestions = createAsyncAction(
 
 const nextQuestion = createAction(TYPE_PREFIX + 'NEXT')();
 
+const activatePowerup = createAction(TYPE_PREFIX + 'ACTIVATE_POWERUP')<PowerupName>();
+
 export const questionsActions = {
   requestQuestions,
   nextQuestion,
+  activatePowerup,
 }
 
 export type QuestionsAction = ActionType<typeof questionsActions>;
@@ -80,12 +103,23 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
       queue,
       loading: false,
       error: null,
+      powerups: { ...initialQuestionsState.powerups }
     }
   })
   .handleAction(requestQuestions.failure, (state) => ({
     ...state,
     loading: false,
     error: 'Failed to retrieve questions, please refresh the page.'
+  }))
+  .handleAction(activatePowerup, (state, action) => ({
+    ...state,
+    powerups: {
+      ...state.powerups,
+      [action.payload]: {
+        active: true,
+        used: true,
+      },
+    },
   }))
   .handleAction(nextQuestion, (state, action) => {
     // Shouldn't be able to skip if still loading
@@ -102,5 +136,15 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
       ...state,
       current: nextQuestion,
       queue: remainingQuestions,
+      powerups: {
+        removeTwo: {
+          active: false,
+          used: state.powerups.removeTwo.active,
+        },
+        addTime: {
+          active: false,
+          used: state.powerups.addTime.active,
+        },
+      }
     }
   });

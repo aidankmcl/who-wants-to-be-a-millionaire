@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useGlobalState, actions } from '../state';
-import { Question as TQuestion } from '../state/questions';
+import { Question as TQuestion, PowerupName } from '../state/questions';
 import { Question } from '../ui/Question';
 import { Error } from '../ui/Error';
 import { LoadingIndicator } from '../ui/Loading';
@@ -11,20 +11,26 @@ import { Countdown } from '../ui/Countdown';
 const hardCodedQuestions: TQuestion[] = [{
   id: '123EASY',
   text: 'Hi',
-  answers: ['A', 'B', 'Hello!'],
-  correct: 2
+  answers: ['A', 'B', 'Hello!', 'C'],
+  correct: 2,
 }, {
   id: 'ASABC',
   text: 'Bye',
-  answers: ['A', 'B', 'Stay a while!'],
-  correct: 2
+  answers: ['A', 'B', 'Stay a while!', 'C'],
+  correct: 2,
 }];
 
 // In milliseconds
-const allowedTime = 15 * 1000;
+const allowedTime = 3 * 1000;
 const getNewEndTime = () => new Date().getTime() + allowedTime
 
-export const Quiz = () => {
+type Powerup = 'removeTwo' | 'addTime' | null;
+type RemoveTwoInfo = {
+  active: boolean;
+  used: boolean;
+}
+
+export const Quiz = React.memo(() => {
   const [{ questions }, dispatch] = useGlobalState();
 
   const [startTime, setStartTime] = React.useState(new Date().getTime());
@@ -58,11 +64,7 @@ export const Quiz = () => {
     }
   };
 
-  // Create new function rather than using answerQuestion directly
-  // to prescribe behavior of a skip
-  const skipQuestion = () => {
-    answerQuestion(-1, allowedTime);
-  }
+  console.log(questions.powerups);
 
   React.useEffect(() => {
     if (questions.current) {
@@ -79,6 +81,17 @@ export const Quiz = () => {
     }
   }, [JSON.stringify(questions.current)])
 
+  // Create new function rather than using answerQuestion directly
+  // to prescribe behavior of a skip
+  const skipQuestion = () => {
+    answerQuestion(-1, allowedTime);
+  }
+
+  const activatePowerup = (powerup: PowerupName) => {
+    console.log(questions.powerups);
+    dispatch(actions.activatePowerup(powerup));
+  }
+
   if (questions.error) {
     return <Error text={questions.error} />
   } else if (questions.loading) {
@@ -91,8 +104,11 @@ export const Quiz = () => {
       <Question
         key={questions.current.id}
         info={questions.current}
+        help={questions.powerups.removeTwo.active}
         answerQuestion={answerQuestion}
       />
+      <button onClick={() => activatePowerup('addTime')}>Add 10 Seconds!</button>
+      <button onClick={() => activatePowerup('removeTwo')}>50/50!</button>
       <button onClick={() => skipQuestion()}>Skip!</button>
     </div>
   ) : (
@@ -101,4 +117,4 @@ export const Quiz = () => {
       <Link to='/results'><button>See Results</button></Link>
     </div>
   )
-}
+});
