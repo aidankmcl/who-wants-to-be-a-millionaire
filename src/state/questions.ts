@@ -1,5 +1,5 @@
 
-import { createAction, createAsyncAction, createReducer, ActionType, PayloadAction, getType, Action } from 'typesafe-actions';
+import { createAction, createAsyncAction, createReducer, ActionType, Action } from 'typesafe-actions';
 
 import { shuffle } from '../utils/array';
 
@@ -116,7 +116,7 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
     powerups: {
       ...state.powerups,
       [action.payload]: {
-        active: true,
+        active: !state.powerups[action.payload].used,
         used: true,
       },
     },
@@ -139,11 +139,11 @@ export const questionsReducer = createReducer<IQuestionsState, QuestionsAction>(
       powerups: {
         removeTwo: {
           active: false,
-          used: state.powerups.removeTwo.active,
+          used: state.powerups.removeTwo.used,
         },
         addTime: {
           active: false,
-          used: state.powerups.addTime.active,
+          used: state.powerups.addTime.used,
         },
       }
     }
