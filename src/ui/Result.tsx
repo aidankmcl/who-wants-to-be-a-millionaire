@@ -33,7 +33,7 @@ export const Result: React.FC<Props>  = ({ question, result }) => {
       ))}
       <p>Your Answer: {answers[result.answer]}</p>
       <span>{getVerdict(result.answer, correct)}</span><br/>
-      <span>{(result.duration / 1000).toFixed(2)}</span>
+      <span>{(result.duration / 1000).toFixed(0)}</span>
     </div>
   );
 }

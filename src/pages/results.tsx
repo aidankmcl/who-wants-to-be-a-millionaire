@@ -19,6 +19,7 @@ export const Results: React.FC = () => {
 
         return question && (
           <Result
+            key={answer.questionId}
             question={question}
             result={answer}
           />

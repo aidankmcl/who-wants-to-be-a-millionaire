@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useGlobalState, actions } from '../state';
-import { Question as TQuestion, PowerupName } from '../state/questions';
+import { PowerupName } from '../state/questions';
 import { Question } from '../ui/Question';
 import { Error } from '../ui/Error';
 import { LoadingIndicator } from '../ui/Loading';
