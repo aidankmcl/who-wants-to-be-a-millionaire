@@ -10,10 +10,11 @@ import { Countdown } from '../ui/Countdown';
 import { useTimer } from '../utils/timer';
 import { shuffle } from '../utils/array';
 
-import { getQuestions } from './quizAPI';
+import { getQuestions, hardCodedData } from '../utils/triviaAPI';
 
 // All time in milliseconds
 const allowedTime = 15 * 1000;
+const OFFLINE = true;
 
 export const Quiz = React.memo(() => {
   const [{ questions }, dispatch] = useGlobalState();
@@ -25,8 +26,14 @@ export const Quiz = React.memo(() => {
 
     getQuestions().then((questions) => {
       dispatch(actions.requestQuestions.success(questions))
-    }).catch(() => {
-      dispatch(actions.requestQuestions.failure())
+    }).catch((err) => {
+      if (err.message === "Network Error" && err.response === undefined) {
+        // Browser doesn't have access to internet, use hardcoded questions.
+        dispatch(actions.requestQuestions.success(hardCodedData))
+      } else {
+        // Otherwise, handle error honestly
+        dispatch(actions.requestQuestions.failure())
+      }
     });
   }, [!!dispatch]) // Re-run effect if availability of dispatch function changes
 

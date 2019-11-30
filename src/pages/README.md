@@ -16,3 +16,5 @@ sections/
       C.tsx
   ...
 ```
+
+In this case, I've put the file that describes the trivia interaction in `utils/` to keep the `pages/` directory focused.
