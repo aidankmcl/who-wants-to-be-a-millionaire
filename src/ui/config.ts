@@ -1,6 +1,8 @@
 export const colors = {
   red: '#C73800',
   white: '#FFF',
+  purple: 'blueviolet',
+  darkblue: 'darkslateblue'
 }
 
 export const padding = {
