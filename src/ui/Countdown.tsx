@@ -7,35 +7,31 @@ const StyledContainer = styled.div`
   width: 8rem;
   height: 8rem;
   background: ${colors.darkblue};
-  border: 0.5rem solid ${colors.white};
-  border-radius: 100%;
-`
+  border: 0.8rem solid ${colors.white};
+  border-radius: 1rem 100% 100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-const StyledValue = styled.span`
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
-  text-algin: center;
+  span {
+    display: inline-block;
+    font-size: 3.5rem;
+    color: ${colors.white};
+  }
 `
 
 type Props = {
   remainingTime: number;
-  totalTime: number;
-  // Allow for more accurate countdown display
   decimals?: number;
-  interval?: number;
 }
 
 export const Countdown: React.FC<Props> = ({
   remainingTime,
-  totalTime,
   decimals = 0,
-  interval = 1000
 }) => {
   return (
     <StyledContainer>
-      <StyledValue>{(remainingTime / 1000).toFixed(decimals)}</StyledValue>
+      <span>{(remainingTime / 1000).toFixed(decimals)}</span>
     </StyledContainer>
   );
 };

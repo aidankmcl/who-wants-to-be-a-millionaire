@@ -3,6 +3,8 @@ import { useHistory } from 'react-router';
 
 import { useGlobalState } from '../state/index';
 import { Result } from '../ui/Result';
+import { Layout } from '../ui/Layout';
+import { List } from '../ui/List';
 
 export const Results: React.FC = () => {
   const [{ questions, results }] = useGlobalState();
@@ -13,18 +15,22 @@ export const Results: React.FC = () => {
   }
 
   return (
-    <div>
-      {results.answers.map((answer) => {
-        const question = questions.data[answer.questionId];
+    <Layout>
+      <List>
+        {results.answers.map((answer) => {
+          const question = questions.data[answer.questionId];
 
-        return question && (
-          <Result
-            key={answer.questionId}
-            question={question}
-            result={answer}
-          />
-        );
-      })}
-    </div>
+          return question && (
+            <li>
+              <Result
+                key={answer.questionId}
+                question={question}
+                result={answer}
+              />
+            </li>
+          );
+        })}
+      </List>
+    </Layout>
   );
 }

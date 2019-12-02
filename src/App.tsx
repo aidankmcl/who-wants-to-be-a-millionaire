@@ -7,8 +7,8 @@ import { Intro, Quiz, Results } from './pages';
 import { colors } from './ui/config';
 
 const AppStyle = createGlobalStyle`
-  html {
-    background: ${colors.purple}
+  html, body {
+    background: ${colors.purple};
   }
 `
 

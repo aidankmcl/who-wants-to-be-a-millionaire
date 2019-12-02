@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { useGlobalState, actions } from '../state';
 import { PowerupName } from '../state/questions';
@@ -11,10 +12,40 @@ import { useTimer } from '../utils/timer';
 import { shuffle } from '../utils/array';
 
 import { getQuestions, hardCodedData } from '../utils/triviaAPI';
+import { CountdownBar } from '../ui/CountdownBar';
+import { Layout } from '../ui/Layout';
+import { Button } from '../ui/Button';
+import { padding } from '../ui/config';
+import { Spacer } from '../ui/Spacer';
+import { Center } from '../ui/Center';
+import { Title } from '../ui/Text';
 
 // All time in milliseconds
 const allowedTime = 15 * 1000;
-const OFFLINE = true;
+
+const QuizLayoutContainer = styled.div`
+  .loading {
+    display: block;
+    width: 100%;
+    height: 0.8rem;
+    margin-left: auto;
+  }
+
+  .sidebar {
+    display: inline-block;
+    vertical-align: top;
+    width: 9rem;
+    padding-right: ${padding.medium};
+    margin-top: -0.8rem;
+  }
+
+  .main {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: ${padding.medium}
+    width: calc(100% - 11rem - ${padding.medium});
+  }
+`
 
 export const Quiz = React.memo(() => {
   const [{ questions }, dispatch] = useGlobalState();
@@ -77,9 +108,7 @@ export const Quiz = React.memo(() => {
 
   // Create new function rather than using answerQuestion directly
   // to prescribe behavior of a skip
-  const skipQuestion = () => {
-    answerQuestion(-1, allowedTime);
-  }
+  const skipQuestion = () => answerQuestion(-1, allowedTime);
 
   const activatePowerup = (powerup: PowerupName) => {
     dispatch(actions.activatePowerup(powerup));
@@ -95,42 +124,80 @@ export const Quiz = React.memo(() => {
   }, [JSON.stringify(questions.current)])
 
   if (questions.error) {
-    return <Error text={questions.error} />
+    return (
+      <Layout>
+        <Center>
+          <Error text={questions.error} />
+        </Center>
+      </Layout>
+    );
   } else if (questions.loading) {
-    return <LoadingIndicator />
+    return (
+      <Layout>
+        <Center>
+          <LoadingIndicator />
+        </Center>
+      </Layout>
+    );
   }
 
   return (questions.current) ? (
-    <div>
-      <Countdown
-        remainingTime={remainingTime}
-        totalTime={allowedTime}
-      />
-      <Question
-        key={questions.current.id}
-        info={questions.current}
-        disabledAnswers={hiddenIndices}
-        answerQuestion={answerQuestion}
-      />
-      <button
-        disabled={questions.powerups.addTime.used}
-        onClick={() => activatePowerup('addTime')}
-      >
-        Add 10 Seconds!
-      </button>
+    <Layout>
+      <QuizLayoutContainer>
+        <div className="loading">
+          <CountdownBar
+            remainingTime={remainingTime}
+            totalTime={allowedTime}
+          />
+        </div>
 
-      <button
-        disabled={questions.powerups.removeTwo.used}
-        onClick={() => activatePowerup('removeTwo')}
-      >
-        50/50!
-      </button>
-      <button onClick={() => skipQuestion()}>Skip!</button>
-    </div>
+        <div className="sidebar">
+          <Countdown
+            remainingTime={remainingTime}
+          />
+
+          <Spacer size="medium" />
+
+          <Button
+            color="yellow"
+            disabled={questions.powerups.addTime.used}
+            onClick={() => activatePowerup('addTime')}
+          >
+            Add 10 Seconds!
+          </Button>
+
+          <Button
+            color="green"
+            disabled={questions.powerups.removeTwo.used}
+            onClick={() => activatePowerup('removeTwo')}
+          >
+            50/50!
+          </Button>
+
+          <Spacer size="medium" />
+
+          <Button
+            color="lightblue"
+            onClick={() => skipQuestion()}
+          >
+            Skip!
+          </Button>
+        </div>
+
+        <div className="main">
+          <Question
+            key={questions.current.id}
+            info={questions.current}
+            disabledAnswers={hiddenIndices}
+            answerQuestion={answerQuestion}
+          />
+        </div>
+      </QuizLayoutContainer>
+    </Layout>
   ) : (
-    <div>
-      <p>Quiz done! Now you can see how you did:</p>
-      <Link to='/results'><button>See Results</button></Link>
-    </div>
+    <Layout>
+      <Title as="p">Quiz done! <br />Now you can see how you did here:</Title>
+      <Link to='/results'><Button>See Results</Button></Link>
+    </Layout>
   )
 });
