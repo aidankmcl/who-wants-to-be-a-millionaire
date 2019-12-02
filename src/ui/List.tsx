@@ -13,7 +13,7 @@ export const List = styled.ol`
   }
 
   li::before {
-    content: counter(custom-counter) ".";
+    content: counter(custom-counter) '.';
     font-size: ${fontSizes.large};
     color: ${colors.white};
     font-weight: ${fontWeights.heavy};

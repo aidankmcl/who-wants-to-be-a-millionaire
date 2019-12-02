@@ -30,6 +30,10 @@ describe('global reducer', () => {
   it('returns updated state after getting questions', () => {
     const state = globalReducer(initialState, actions.requestQuestions.success([testQuestion]));
     const expectedState: IGlobalState['questions'] = {
+      powerups: {
+        removeTwo: { active: false, used: false },
+        addTime: { active: false, used: false },
+      },
       data: {
         [testQuestion.id]: testQuestion
       },
@@ -59,6 +63,10 @@ describe('global reducer', () => {
     const stateAfterIncrementing = globalReducer(stateAfterAnswering, actions.nextQuestion());
 
     const expectedState: IGlobalState['questions'] = {
+      powerups: {
+        removeTwo: { active: false, used: false },
+        addTime: { active: false, used: false },
+      },
       data: {
         [testQuestion.id]: testQuestion,
       },

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { colors } from './config';
+import { colors, fontSizes } from '../../../ui/config';
 
 const StyledContainer = styled.div`
   width: 8rem;
@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
 
   span {
     display: inline-block;
-    font-size: 3.5rem;
+    font-size: ${fontSizes.xl};
     color: ${colors.white};
   }
 `

@@ -7,7 +7,7 @@ import { Title } from '../ui/Text';
 
 export const Intro = () => (
   <Layout>
-    <Title as="p">
+    <Title as='p'>
       Welcome to Who Wants to be a Millionaire! Try your hand at winning 1,000,000 SEK
     </Title>
     <Link to='/quiz'><Button>Start Quiz!</Button></Link>

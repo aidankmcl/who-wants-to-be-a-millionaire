@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-import { Question } from '../state/questions';
-import { pseudoUUID } from './random';
+import { Question } from '../../state/questions';
+import { pseudoUUID } from '../../utils/random';
 import fakeData from './fakeData.json';
 
 type APIQuestion = {
@@ -14,14 +14,14 @@ type APIQuestion = {
   incorrect_answers: string[];
 }
 
-type Response = {
+export type RawResponse = {
   response_code: number;
   results: APIQuestion[]
 }
 
-const TRIVIA_API_URL = "https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple&encode=url3986";
+const TRIVIA_API_URL = 'https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple&encode=url3986';
 
-const convertAPIResponse = (triviaResponse: Response): Question[] => {
+const convertAPIResponse = (triviaResponse: RawResponse): Question[] => {
   return triviaResponse.results.map((rawQuestion) => {
     const correct = Math.floor(Math.random() * (rawQuestion.incorrect_answers.length + 1));
     const answers = rawQuestion.incorrect_answers.map((answer) => decodeURIComponent(answer));
@@ -38,6 +38,6 @@ const convertAPIResponse = (triviaResponse: Response): Question[] => {
 export const hardCodedData = convertAPIResponse(fakeData);
 
 export const getQuestions = async (): Promise<Question[]> => {
-  const response = await axios.get<Response>(TRIVIA_API_URL);
+  const response = await axios.get<RawResponse>(TRIVIA_API_URL);
   return convertAPIResponse(response.data);
 }

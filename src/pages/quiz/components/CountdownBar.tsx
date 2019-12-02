@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { colors } from './config';
+import { colors } from '../../../ui/config';
 
 type StyleProps = {
   percentage: number;

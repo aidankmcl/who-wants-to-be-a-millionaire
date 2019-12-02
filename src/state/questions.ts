@@ -53,11 +53,6 @@ export const initialQuestionsState: IQuestionsState = {
 
 const TYPE_PREFIX = 'questions/';
 
-/*
- * I'll pretend that I'm requesting from a service and use
- * actions for each step to show how I'd handle the logic
- * if I were.
- */
 const requestQuestions = createAsyncAction(
   TYPE_PREFIX + 'RETRIEVE_REQUEST',
   TYPE_PREFIX + 'RETRIEVE_SUCCESS',

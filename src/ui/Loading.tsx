@@ -13,6 +13,6 @@ const Wrapper = styled.div`
 
 export const LoadingIndicator: React.FC = () => (
   <Wrapper>
-    <Title as="span">Loading...</Title>
+    <Title as='span'>Loading...</Title>
   </Wrapper>
 )

@@ -2,23 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useGlobalState, actions } from '../state';
-import { PowerupName } from '../state/questions';
-import { Question } from '../ui/Question';
-import { Error } from '../ui/Error';
-import { LoadingIndicator } from '../ui/Loading';
-import { Countdown } from '../ui/Countdown';
-import { useTimer } from '../utils/timer';
-import { shuffle } from '../utils/array';
+import { useGlobalState, actions } from '../../state';
+import { PowerupName } from '../../state/questions';
+import { useTimer } from '../../utils/timer';
+import { shuffle } from '../../utils/array';
+import { LoadingIndicator } from '../../ui/Loading';
+import { Error } from '../../ui/Error';
+import { Layout } from '../../ui/Layout';
+import { Button } from '../../ui/Button';
+import { padding } from '../../ui/config';
+import { Spacer } from '../../ui/Spacer';
+import { Center } from '../../ui/Center';
+import { Title } from '../../ui/Text';
 
-import { getQuestions, hardCodedData } from '../utils/triviaAPI';
-import { CountdownBar } from '../ui/CountdownBar';
-import { Layout } from '../ui/Layout';
-import { Button } from '../ui/Button';
-import { padding } from '../ui/config';
-import { Spacer } from '../ui/Spacer';
-import { Center } from '../ui/Center';
-import { Title } from '../ui/Text';
+import { getQuestions, hardCodedData } from './api';
+import { Question } from './components/Question';
+import { Countdown } from './components/Countdown';
+import { CountdownBar } from './components/CountdownBar';
 
 // All time in milliseconds
 const allowedTime = 15 * 1000;
@@ -47,7 +47,7 @@ const QuizLayoutContainer = styled.div`
   }
 `
 
-export const Quiz = React.memo(() => {
+export const Quiz = () => {
   const [{ questions }, dispatch] = useGlobalState();
   const [hiddenIndices, setHiddenIndices] = React.useState<number[]>([]);
 
@@ -58,7 +58,7 @@ export const Quiz = React.memo(() => {
     getQuestions().then((questions) => {
       dispatch(actions.requestQuestions.success(questions))
     }).catch((err) => {
-      if (err.message === "Network Error" && err.response === undefined) {
+      if (err.message === 'Network Error' && err.response === undefined) {
         // Browser doesn't have access to internet, use hardcoded questions.
         dispatch(actions.requestQuestions.success(hardCodedData))
       } else {
@@ -125,66 +125,59 @@ export const Quiz = React.memo(() => {
 
   if (questions.error) {
     return (
-      <Layout>
-        <Center>
-          <Error text={questions.error} />
-        </Center>
-      </Layout>
+      <Layout><Center><Error text={questions.error} /></Center></Layout>
     );
   } else if (questions.loading) {
     return (
-      <Layout>
-        <Center>
-          <LoadingIndicator />
-        </Center>
-      </Layout>
+      <Layout><Center><LoadingIndicator /></Center></Layout>
     );
   }
 
   return (questions.current) ? (
     <Layout>
       <QuizLayoutContainer>
-        <div className="loading">
+        <div className='loading'>
           <CountdownBar
             remainingTime={remainingTime}
             totalTime={allowedTime}
           />
         </div>
 
-        <div className="sidebar">
+        <div className='sidebar'>
           <Countdown
             remainingTime={remainingTime}
           />
 
-          <Spacer size="medium" />
+          <Spacer size='medium' />
 
           <Button
-            color="yellow"
+            data-testid="add-time-button"
+            color='green'
             disabled={questions.powerups.addTime.used}
             onClick={() => activatePowerup('addTime')}
           >
-            Add 10 Seconds!
+            +10 Seconds!
           </Button>
 
           <Button
-            color="green"
+            data-testid="remove-two-button"
+            color='green'
             disabled={questions.powerups.removeTwo.used}
             onClick={() => activatePowerup('removeTwo')}
           >
             50/50!
           </Button>
 
-          <Spacer size="medium" />
-
           <Button
-            color="lightblue"
+            data-testid="skip-button"
+            color='yellow'
             onClick={() => skipQuestion()}
           >
             Skip!
           </Button>
         </div>
 
-        <div className="main">
+        <div className='main'>
           <Question
             key={questions.current.id}
             info={questions.current}
@@ -196,8 +189,8 @@ export const Quiz = React.memo(() => {
     </Layout>
   ) : (
     <Layout>
-      <Title as="p">Quiz done! <br />Now you can see how you did here:</Title>
+      <Title as='p'>Quiz done! <br />Now you can see how you did here:</Title>
       <Link to='/results'><Button>See Results</Button></Link>
     </Layout>
   )
-});
+};

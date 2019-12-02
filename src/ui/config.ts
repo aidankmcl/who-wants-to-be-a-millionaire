@@ -9,6 +9,8 @@ export const colors = {
   gray: '#B3B3B3',
 }
 
+export type AvailableColor = keyof typeof colors;
+
 export const padding = {
   small: '0.5rem',
   medium: '1rem',
@@ -19,6 +21,7 @@ export const fontSizes = {
   small: '0.5rem',
   medium: '1rem',
   large: '1.5rem',
+  xl: '3.5rem',
 }
 
 export const fontWeights = {

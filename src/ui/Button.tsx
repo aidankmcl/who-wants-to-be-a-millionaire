@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { fontSizes, fontWeights, colors, padding } from './config';
+import { fontSizes, fontWeights, colors, padding, AvailableColor } from './config';
 
 type Props = {
-  color?: keyof typeof colors;
+  color?: AvailableColor;
 }
 
 export const Button = styled.button<Props>`
@@ -23,6 +23,10 @@ export const Button = styled.button<Props>`
   &[disabled] {
     background: ${colors.purple};
     color: ${colors.white};
+    cursor: default;
+  }
+
+  &.no-hover {
     cursor: default;
   }
 
