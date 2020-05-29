@@ -1,3 +1,19 @@
+# Who wants to be a millionaire?? Is it you?
+This quiz game was made for a tech test and tries out using React Context for global state.
+
+The game has a set of requirements including the following:
+- A timer for each question
+- Ability to skip
+- Powerup: Ask for 50/50 chance
+- Powerup: Get more time
+- Results page
+
+Here's how it looks!
+![img](https://raw.githubusercontent.com/aidankmcl/who-wants-to-be-a-millionaire/master/media/quiz.png)
+
+
+# vvv CRA Boilerplate below vvv
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
